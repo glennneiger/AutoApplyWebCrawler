@@ -19,7 +19,7 @@ Application for Automatically Applying to jobs using a Web Crawler (i.e. using S
 	* "DetectLanguageApiKey" with API Key as received from http://ws.detectlanguage.com or change to "demo" for a few free calls
 	* "IndeedPublisherApiKey" with API key as received from https://www.indeed.com/publisher
 	* "SqlConnectionString" with connection string to connect to Sql Server database we created and populated in steps 1 through 3
-	* **"Session" with the SessionId you would like to Run as defined in CrossMyLoss database in table Sessions**
+	* "Session" with the SessionId you would like to Run as defined in CrossMyLoss database in table Sessions
 
 # Getting Finished
 
