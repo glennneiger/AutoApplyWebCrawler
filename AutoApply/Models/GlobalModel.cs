@@ -9,6 +9,8 @@
         public static string IndeedPublisherApiKey  { get; set; }
         // To Use, get an API key from: http://ws.detectlanguage.com
         public static string DetectLanguageApiKey   { get; set; }
+        // Correlates to the SessionId of the record we are applying for. Look in table Sessions of database CrossMyLoss
+        public static int Session { get; set; }
     }
 
     // Temp object used for Deserializing from JSON. 
@@ -18,5 +20,6 @@
         public string SqlConnectionString   { get; set; }
         public string IndeedPublisherApiKey { get; set; }
         public string DetectLanguageApiKey  { get; set; }
+        public int Session { get; set; }
     }
 }

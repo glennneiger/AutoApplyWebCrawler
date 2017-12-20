@@ -17,12 +17,13 @@ namespace AutoApply
                 Config.DetectLanguageApiKey = tmp.DetectLanguageApiKey;
                 Config.IndeedPublisherApiKey = tmp.IndeedPublisherApiKey;
                 Config.SqlConnectionString = tmp.SqlConnectionString;
+                Config.Session = tmp.Session;
             }
 
             while (true)
             {
-                var countries = IndeedSql.GetCountrySearches(1);
-                var searchTerms = IndeedSql.GetSearchTerms(1);
+                var countries = IndeedSql.GetCountrySearches(Config.Session);
+                var searchTerms = IndeedSql.GetSearchTerms(Config.Session);
 
                 foreach (var s in searchTerms)
                 {
@@ -36,7 +37,7 @@ namespace AutoApply
                         Console.WriteLine("Country Applying: " + c.Country);
                         Console.WriteLine("*****************************");
 
-                        Apply.ViaIndeed(s, c.Location, c.CountryCode, true, c.CheckLang, 1);
+                        Apply.ViaIndeed(s, c.Location, c.CountryCode, true, c.CheckLang, Config.Session);
                     }
                 }
             }
