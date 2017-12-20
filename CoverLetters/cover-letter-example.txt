@@ -1,0 +1,14 @@
+Dear Hiring Manager,
+
+Thank you for the opportunity to apply to the position of %varPos% at %varCompany%. I am excited to apply because of how well I meet the criteria of the job specification. 
+
+My qualifications consist of a Bachelor's degree in Computer Science and 6 years experience programming with C#, Sql Server and ASP.Net technologies. In my current and previous roles as a developer, I have been working with Azure, AWS, Bluemix and Office 365 Cloud technologies. 
+
+Overall I am a diligent worker and would welcome the opportunity for full time employment when it presents itself!
+
+Many thanks for your considerations,
+Chris
+
+Phone: +1 (703) 989 - 8381
+Email: chris.hadjimylos@hotmail.com
+Skype: Hadjimylos1

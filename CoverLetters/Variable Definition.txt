@@ -1,0 +1,8 @@
+The following variables are available to insert to the template.txt file in this folder. 
+
+Please note that if the template.txt does not exist in this folder it should be added 
+with the contents of your cover letter. Your cover letter may include the following variables:
+
+%varArea% = State
+%varPos% = Position
+%varCompany% = Company

@@ -1,0 +1,5 @@
+﻿{
+  "DetectLanguageApiKey": "http://ws.detectlanguage.com", // Optional (change to "demo" if you would like [allows for a few sample calls a day])
+  "IndeedPublisherApiKey": "https://www.indeed.com/publisher", // Required
+  "SqlConnectionString": "Provider=SQLNCLI11;Server=myServerAddress;Database=myDataBase;Uid=myUsername;Pwd=myPassword;" // Change to your Database (as in Readme.md)
+}
