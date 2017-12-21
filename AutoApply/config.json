@@ -1,5 +1,5 @@
 ﻿{
-  "sql": "Data Source=awsrdsurl;Initial Catalog=CrossMyLoss;User Id=username;Password=password",
+  "sql": "Data Source=entervalue;Initial Catalog=CrossMyLoss;User Id=username;Password=password",
   "indeed-api": "key-value", // https://www.indeed.com/publisher (Required)
   "locations": [
     { "country-code": "us", "city": "New York" },

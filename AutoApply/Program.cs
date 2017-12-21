@@ -34,18 +34,6 @@ namespace AutoApply
                         Apply.ViaIndeed(t, l.Location, l.CountryCode, true, config.SqlCon, config.User, config.IndeedKey);
                     }
                 }
-
-                //foreach (var s in searchTerms)
-                //{
-
-                //
-                //    foreach (var c in countries)
-                //    {
-                //        
-                //
-                //        Apply.ViaIndeed(s, c.Location, c.CountryCode, true, c.CheckLang, Config.Session);
-                //    }
-                //}
             }
 
         }
