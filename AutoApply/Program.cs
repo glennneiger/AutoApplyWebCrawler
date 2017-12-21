@@ -7,39 +7,45 @@ namespace AutoApply
     class Program
     {
         static void Main(string[] args)
-        {   
+        {
+            Config config = new Config();
+
             // Load Configuration File for us in application
             using (StreamReader r = new StreamReader(@"..\..\config.json"))
             {
                 string json = r.ReadToEnd();
-                ConfigTmp tmp = JsonConvert.DeserializeObject<ConfigTmp>(json);
-
-                Config.DetectLanguageApiKey = tmp.DetectLanguageApiKey;
-                Config.IndeedPublisherApiKey = tmp.IndeedPublisherApiKey;
-                Config.SqlConnectionString = tmp.SqlConnectionString;
-                Config.Session = tmp.Session;
+                config = JsonConvert.DeserializeObject<Config>(json);
             }
 
             while (true)
             {
-                var countries = IndeedSql.GetCountrySearches(Config.Session);
-                var searchTerms = IndeedSql.GetSearchTerms(Config.Session);
-
-                foreach (var s in searchTerms)
+                foreach(var t in config.Terms)
                 {
                     Console.WriteLine("*****************************");
-                    Console.WriteLine("Search Term Used: " + s);
+                    Console.WriteLine("Search Term Used: " + t);
                     Console.WriteLine("*****************************");
 
-                    foreach (var c in countries)
+                    foreach(var l in config.Locations)
                     {
                         Console.WriteLine("*****************************");
-                        Console.WriteLine("Country Applying: " + c.Country);
+                        Console.WriteLine("Country Code: " + l.CountryCode);
                         Console.WriteLine("*****************************");
 
-                        Apply.ViaIndeed(s, c.Location, c.CountryCode, true, c.CheckLang, Config.Session);
+                        Apply.ViaIndeed(t, l.Location, l.CountryCode, true, config.SqlCon, config.User, config.IndeedKey);
                     }
                 }
+
+                //foreach (var s in searchTerms)
+                //{
+
+                //
+                //    foreach (var c in countries)
+                //    {
+                //        
+                //
+                //        Apply.ViaIndeed(s, c.Location, c.CountryCode, true, c.CheckLang, Config.Session);
+                //    }
+                //}
             }
 
         }

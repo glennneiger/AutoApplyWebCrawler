@@ -20,31 +20,22 @@ namespace AutoApply
 
         private static string display = string.Empty;
         
-        public static void ViaIndeed(string searchTerm, string location, string countryCode, bool companySingleApply, bool checkLang, int sessionId)
+        public static void ViaIndeed(string searchTerm, string location, string countryCode, bool companySingleApply, string sql, User user, string apikey)
         {
-            // Returns Null if Session is invalid
-            var user = IndeedSql.GetUserInfo(sessionId);
-
-            // Exit if SessionId is not valid
-            if (user == null)
-            {
-                Console.WriteLine("Session is invalid and does not exist. Please pass a SessionId that is valid.");
-                return;
-            }
+            SqlConnection con = new SqlConnection(sql);
 
             // Append string with rest of display
             display = "Location: " + location + " Search Term(s): " + searchTerm;
 
             Console.Clear();
             // Retrieve all pages with "Quick Apply" button on them ONLY
-            var supersetQuickies = GetAllQuickies(searchTerm, location, countryCode, sessionId);
+            var supersetQuickies = GetAllQuickies(searchTerm, location, countryCode, apikey);
             Console.Clear();
             Console.WriteLine(display);
 
-            // Reduce by configurations passed. You can reduce
-            // by Language is English Only (checkLang) and/or Do not appy to 
+            // Reduce by configurations passed. Do not appy to 
             // same company 2ce in a session (companySingleApply)
-            var reducedQuckies = ReduceQuickies(supersetQuickies, companySingleApply, checkLang, sessionId);
+            var reducedQuckies = ReduceQuickies(supersetQuickies, companySingleApply, con);
 
             //There is nothing (new) to add therefore exit
             if (reducedQuckies.Count == 0) 
@@ -56,7 +47,7 @@ namespace AutoApply
             for (int j = 0; j < reducedQuckies.Count; j++)
             {
                 // If already applied to company proceed loop
-                if (IndeedSql.AlreadyAppliedCompany(reducedQuckies[j].Company, sessionId))
+                if (IndeedSql.AlreadyAppliedCompany(reducedQuckies[j].Company, con))
                     continue;
 
                 //Load the Job Posting page
@@ -331,7 +322,7 @@ namespace AutoApply
                         if (sw.ElapsedMilliseconds > 60000 * 2.5) 
                         {
                             // Insert Failure message here!!
-                            SaveSubmission(reducedQuckies[j], false, sessionId); //Changed to true as they are fine.
+                            SaveSubmission(reducedQuckies[j], false, con); //Changed to true as they are fine.
                             Console.Clear();
                             Console.WriteLine(display);
                             Console.WriteLine("\nFailed to apply: " + reducedQuckies[j].Company + " (" + reducedQuckies[j].JobTitle + ")");
@@ -343,7 +334,7 @@ namespace AutoApply
                         Console.Clear();
                         Console.WriteLine(display);
                         Console.WriteLine("\nSucceeded in applying to: " + reducedQuckies[j].Company + " (" + reducedQuckies[j].JobTitle + ")");
-                        SaveSubmission(reducedQuckies[j], true, sessionId);
+                        SaveSubmission(reducedQuckies[j], true, con);
                         break;
 
                     }
@@ -366,33 +357,20 @@ namespace AutoApply
 
         // ********************************************************* Private Methods
 
-        private static List<Indeed> ReduceQuickies(List<Indeed> superset, bool companySingleApply, bool checkLang, int sessionId)
+        private static List<Indeed> ReduceQuickies(List<Indeed> superset, bool companySingleApply, SqlConnection con)
         {
 
             List<Indeed> reduced = new List<Indeed>();
 
-            if (companySingleApply && checkLang)
+            if (companySingleApply)
             {
                 reduced.AddRange
                 (
                     superset.Where
                     (
                         page =>
-                        !IndeedSql.AlreadyAppliedCompany(page.Company, sessionId) &&
-                        !IndeedSql.AlreadyAppliedToJob(page.Jobkey, page.Url, sessionId) &&
-                        DetectLanguage.IsEnglish(page.Snippet)
-                    )
-                );
-            }
-            else if (companySingleApply && !checkLang)
-            {
-                reduced.AddRange
-                (
-                    superset.Where
-                    (
-                        page =>
-                        !IndeedSql.AlreadyAppliedCompany(page.Company, sessionId) &&
-                        !IndeedSql.AlreadyAppliedToJob(page.Jobkey, page.Url, sessionId)
+                        !IndeedSql.AlreadyAppliedCompany(page.Company, con) &&
+                        !IndeedSql.AlreadyAppliedToJob(page.Jobkey, page.Url, con) 
                     )
                 );
             }
@@ -402,7 +380,7 @@ namespace AutoApply
                     (
                         superset.Where
                         (
-                            page => !IndeedSql.AlreadyAppliedToJob(page.Jobkey, page.Url, sessionId)
+                            page => !IndeedSql.AlreadyAppliedToJob(page.Jobkey, page.Url, con)
                         )
                     );
             }
@@ -410,7 +388,7 @@ namespace AutoApply
             return reduced;
         }
 
-        private static bool SaveSubmission(Indeed applied, bool successfulApply, int sessionId)
+        private static bool SaveSubmission(Indeed applied, bool successfulApply, SqlConnection con)
         {
             InsertApplyOps ops = new InsertApplyOps();
 
@@ -438,7 +416,7 @@ namespace AutoApply
 
             try
             {
-                IndeedSql.InsertApply(ops, successfulApply, sessionId);
+                IndeedSql.InsertApply(ops, successfulApply, con);
                 return true;
             }
             catch
@@ -463,10 +441,10 @@ namespace AutoApply
             return doc;
         }
 
-        private static List<Indeed> GetAllQuickies(string searchTerm, string location, string country, int sessionId)
+        private static List<Indeed> GetAllQuickies(string searchTerm, string location, string country, string apikey)
         {
             // Start position (startFromPosition) set to 0, meaning 1st Search Result page. 
-            string url = GenerateURL.Search(searchTerm, location, 0, country);
+            string url = GenerateURL.Search(searchTerm, location, 0, country, apikey);
             
             //Get number of times to loop --
             XmlDocument xmlDocument = ConsumeWebServiceRest(url);
@@ -486,7 +464,7 @@ namespace AutoApply
                 Console.WriteLine(display + "\nLoading page... " + (i + 1) + "/" + timesToIterate);
 
                 int pageStartFromRecord = i * 25; //25 records per page, way of receiving all records for current page
-                url = GenerateURL.Search(searchTerm, location, pageStartFromRecord, country);
+                url = GenerateURL.Search(searchTerm, location, pageStartFromRecord, country, apikey);
                 xmlDocument = ConsumeWebServiceRest(url);
                 XmlNodeList results = xmlDocument.GetElementsByTagName("result");
                 var batchIndeeds = ConvertXmlToObj(results);
@@ -593,240 +571,136 @@ namespace AutoApply
 
     internal static class IndeedSql
     {        
-        static SqlConnection con = new SqlConnection(Config.SqlConnectionString);
 
-        public static List<string> GetSearchTerms(int sessionId)
+        public static void InsertApply(InsertApplyOps options, bool successfulApply, SqlConnection con)
+        {
+            var success = -1;
+
+            if (successfulApply)
+                success = 1;
+            else
+                success = 0;
+
+            string insert = "INSERT INTO ApplyIndeed (" +
+                            "SuccessfulApply, " +
+                            "Jobkey, " +
+                            "Url, " +
+                            "Snippet, " +
+                            "JobTitle, " +
+                            "Company, " +
+                            "DateTimeApplied, " +
+                            "Sponsored, " +
+                            "Expired, " +
+                            "IndeedApply," +
+                            "FormattedLocationFull, " +
+                            "FormattedRelativeTime," +
+                            "OnMouseDown, " +
+                            "Latitude, " +
+                            "Longitude, " +
+                            "City, " +
+                            "State, " +
+                            "Country, " +
+                            "FormattedLocation, " +
+                            "Source, " +
+                            "Date) VALUES (";
+            insert += success + ",";
+            insert += "'" + options.Jobkey.Replace("'", "''") + "',";
+            insert += "'" + options.Url.Replace("'", "''") + "',";
+            insert += "'" + options.Snippet.Replace("'", "''") + "',";
+            insert += "'" + options.JobTitle.Replace("'", "''") + "',";
+            insert += "'" + options.Company.Replace("'", "''") + "',";
+            insert += "'" + options.DateTimeApplied.ToString("s", System.Globalization.CultureInfo.InvariantCulture) + "',";
+            insert += "'" + options.Sponsored.Replace("'", "''") + "',";
+            insert += "'" + options.Expired.Replace("'", "''") + "',";
+            insert += "'" + options.IndeedApply.Replace("'", "''") + "',";
+            insert += "'" + options.FormattedLocationFull.Replace("'", "''") + "',";
+            insert += "'" + options.FormattedRelativeTime.Replace("'", "''") + "',";
+            insert += "'" + options.OnMouseDown.Replace("'", "''") + "',";
+            insert += "'" + options.Latitude.Replace("'", "''") + "',";
+            insert += "'" + options.Longitude.Replace("'", "''") + "',";
+            insert += "'" + options.City.Replace("'", "''") + "',";
+            insert += "'" + options.State.Replace("'", "''") + "',";
+            insert += "'" + options.Country.Replace("'", "''") + "',";
+            insert += "'" + options.FormattedLocation.Replace("'", "''") + "',";
+            insert += "'" + options.Source.Replace("'", "''") + "',";
+            insert += "'" + options.Date.Replace("'", "''") + "'";
+            insert += ")";
+
+
+            SqlCommand cmd = new SqlCommand()
             {
-                string query = "SELECT Term FROM SearchTerms WHERE UserId = " +
-                               "(SELECT UserId FROM Sessions WHERE " +
-                               "SessionId = " + sessionId + ")";
+                CommandText = insert,
+                CommandType = CommandType.Text,
+                Connection = con
+            };
 
-                SqlCommand cmd = new SqlCommand()
-                {
-                    Connection = con,
-                    CommandText = query,
-                    CommandType = CommandType.Text
-                };
+            con.Open();
+            try { cmd.ExecuteNonQuery(); } catch { }
+            con.Close();
+        }
 
-                List<string> terms = new List<string>();
+        public static bool AlreadyAppliedToJob(string jobKey, string url, SqlConnection con)
+        {
+            //RETURN TRUE:
+            //if url or jobkey exists 
+            //Previous Successful Application!
 
-                con.Open();
+            string query = "SELECT TOP 1 * FROM ApplyIndeed a WHERE (URL='" + url + "' OR Jobkey = '" + jobKey + "')";
 
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    terms.Add(reader["Term"].ToString());
-                }
+            SqlCommand cmd = new SqlCommand()
+            {
+                CommandText = query,
+                CommandType = CommandType.Text,
+                Connection = con
+            };
 
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
                 con.Close();
-
-                return terms;
+                return true;
             }
 
-        public static List<UserCountryApply> GetCountrySearches(int sessionId)
+            con.Close();
+            return false;
+        }
+
+        public static bool AlreadyAppliedCompany(string company, SqlConnection con)
+        {
+            //RETURN TRUE:
+            //if company was already applied to  ---  Apply to one job per company per session
+
+            string query = "SELECT TOP 1 * FROM ApplyIndeed WHERE Company = '" + company.Replace("'", "''") + "'";
+
+            SqlCommand cmd = new SqlCommand()
             {
-                string query = "SELECT b.Country, b.CountryCode, a.LocationSearch, b.CheckLang FROM UsersCountriesToApply a INNER JOIN IndeedAvailCountries b ON a.AvailCountryId = b.AvailCountryId WHERE a.UserId = (SELECT UserId FROM Sessions WHERE SessionId = " + sessionId + ")";
+                CommandText = query,
+                CommandType = CommandType.Text,
+                Connection = con
+            };
 
-                SqlCommand cmd = new SqlCommand()
-                {
-                    Connection = con,
-                    CommandText = query,
-                    CommandType = CommandType.Text
-                };
-
-                List<UserCountryApply> applies = new List<UserCountryApply>();
-
-                con.Open();
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    applies.Add(new UserCountryApply()
-                    {
-                        Country = reader["Country"].ToString(),
-                        CountryCode = reader["CountryCode"].ToString(),
-                        Location = reader["LocationSearch"].ToString() == null ? "" : reader["LocationSearch"].ToString(),
-                        CheckLang = (bool)reader["CheckLang"]
-                    });
-                }
-
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
                 con.Close();
-
-                return applies;
+                return true;
             }
 
-        public static void InsertApply(InsertApplyOps options, bool successfulApply, int sessionId)
-            {
-                var success = -1;
+            con.Close();
+            return false;
 
-                if (successfulApply)
-                    success = 1;
-                else
-                    success = 0;
-
-                string insert = "INSERT INTO ApplyIndeed (" +
-                                "SuccessfulApply, " +
-                                "Jobkey, " +
-                                "Url, " +
-                                "Snippet, " +
-                                "JobTitle, " +
-                                "Company, " +
-                                "DateTimeApplied, " +
-                                "Sponsored, " +
-                                "Expired, " +
-                                "IndeedApply," +
-                                "FormattedLocationFull, " +
-                                "FormattedRelativeTime," +
-                                "OnMouseDown, " +
-                                "Latitude, " +
-                                "Longitude, " +
-                                "City, " +
-                                "State, " +
-                                "Country, " +
-                                "FormattedLocation, " +
-                                "Source, " +
-                                "Date, SessionId) VALUES (";
-                insert += success + ",";
-                insert += "'" + options.Jobkey.Replace("'", "''") + "',";
-                insert += "'" + options.Url.Replace("'", "''") + "',";
-                insert += "'" + options.Snippet.Replace("'", "''") + "',";
-                insert += "'" + options.JobTitle.Replace("'", "''") + "',";
-                insert += "'" + options.Company.Replace("'", "''") + "',";
-                insert += "'" + options.DateTimeApplied.ToString("s", System.Globalization.CultureInfo.InvariantCulture) + "',";
-                insert += "'" + options.Sponsored.Replace("'", "''") + "',";
-                insert += "'" + options.Expired.Replace("'", "''") + "',";
-                insert += "'" + options.IndeedApply.Replace("'", "''") + "',";
-                insert += "'" + options.FormattedLocationFull.Replace("'", "''") + "',";
-                insert += "'" + options.FormattedRelativeTime.Replace("'", "''") + "',";
-                insert += "'" + options.OnMouseDown.Replace("'", "''") + "',";
-                insert += "'" + options.Latitude.Replace("'", "''") + "',";
-                insert += "'" + options.Longitude.Replace("'", "''") + "',";
-                insert += "'" + options.City.Replace("'", "''") + "',";
-                insert += "'" + options.State.Replace("'", "''") + "',";
-                insert += "'" + options.Country.Replace("'", "''") + "',";
-                insert += "'" + options.FormattedLocation.Replace("'", "''") + "',";
-                insert += "'" + options.Source.Replace("'", "''") + "',";
-                insert += "'" + options.Date.Replace("'", "''") + "',";
-                insert += sessionId;
-                insert += ")";
-
-
-                SqlCommand cmd = new SqlCommand()
-                {
-                    CommandText = insert,
-                    CommandType = CommandType.Text,
-                    Connection = con
-                };
-
-                con.Open();
-                try { cmd.ExecuteNonQuery(); } catch { }
-                con.Close();
-            }
-
-        public static bool AlreadyAppliedToJob(string jobKey, string url, int sessionId)
-            {
-                //RETURN TRUE:
-                //if url or jobkey exists //Previous Successful Application!
-
-                string query = "SELECT TOP 1 * FROM ApplyIndeed a INNER JOIN Sessions b ON a.SessionId = b.SessionId WHERE (URL='" + url + "' OR Jobkey = '" + jobKey + "') AND b.SessionId = " + sessionId;
-
-                SqlCommand cmd = new SqlCommand()
-                {
-                    CommandText = query,
-                    CommandType = CommandType.Text,
-                    Connection = con
-                };
-
-                con.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    con.Close();
-                    return true;
-                }
-
-                con.Close();
-                return false;
-            }
-
-        public static bool AlreadyAppliedCompany(string company, int sessionId)
-            {
-
-                //RETURN TRUE:
-                //if company was already applied to  ---  Apply to one job per company per session
-
-                string query = "SELECT TOP 1 * FROM ApplyIndeed a INNER JOIN Sessions b ON a.SessionId = b.SessionId WHERE a.SessionId = " + sessionId + " AND a.Company = '" + company.Replace("'", "''") + "'";
-
-                SqlCommand cmd = new SqlCommand()
-                {
-                    CommandText = query,
-                    CommandType = CommandType.Text,
-                    Connection = con
-                };
-
-                con.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    con.Close();
-                    return true;
-                }
-
-                con.Close();
-                return false;
-
-            }
-
-        public static User GetUserInfo(int sessionId)
-            {
-                string query = "SELECT a.* FROM Users a INNER JOIN Sessions b ON a.UserId = b.UserId WHERE SessionId = " + sessionId;
-
-                SqlCommand cmd = new SqlCommand()
-                {
-                    CommandText = query,
-                    CommandType = CommandType.Text,
-                    Connection = con
-                };
-
-                con.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    var user = new User()
-                    {
-                        AppEmail = reader["AppEmail"].ToString(),
-                        AppName = reader["AppName"].ToString(),
-                        AppPhone = reader["AppPhone"].ToString(),
-                        AppResumePath = reader["AppResumePath"].ToString(),
-                        AppSupportingDoc1 = reader["AppSupportingDoc1"].ToString(),
-                        AppSupportingDoc2 = reader["AppSupportingDoc2"].ToString(),
-                        AppSupportingDoc3 = reader["AppSupportingDoc3"].ToString(),
-                        AppSupportingDoc4 = reader["AppSupportingDoc4"].ToString(),
-                        AppSupportingDoc5 = reader["AppSupportingDoc5"].ToString(),
-                        CoverLetter = reader["CoverLetter"].ToString()
-                    };
-
-                    con.Close();
-
-                    return user;
-                }
-                else
-                {
-                    con.Close();
-                    return null;
-                }
-
-            }
+        }
 
     }
 
     internal static class GenerateURL
     {
-        public static string Search(string searchTerm, string location, int startFromRecord, string country)
+        public static string Search(string searchTerm, string location, int startFromRecord, string country, string apikey)
         {
             string url = "http://api.indeed.com/ads/apisearch?";
-            url += "publisher=" + Config.IndeedPublisherApiKey; // Indeed publisher ID used to Query Indeed API
+            url += "publisher=" + apikey; // Indeed publisher ID used to Query Indeed API
             url += "&v=2"; // Required (available 1 or 2 [suggested 2])
             url += "&format=xml"; // response to be xml (xml or json selectable) 
             url += "&q=" + HttpUtility.UrlEncode(searchTerm); //query ************

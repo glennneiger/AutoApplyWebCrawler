@@ -33,3 +33,21 @@ C:\Users\Chris Hadjimylos\Desktop\tmp\AutoApply\bin\Release\WebDriver.Support.xm
 C:\Users\Chris Hadjimylos\Desktop\tmp\AutoApply\obj\Release\AutoApply.csprojResolveAssemblyReference.cache
 C:\Users\Chris Hadjimylos\Desktop\tmp\AutoApply\obj\Release\AutoApply.exe
 C:\Users\Chris Hadjimylos\Desktop\tmp\AutoApply\obj\Release\AutoApply.pdb
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\AutoApply.exe.config
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\AutoApply.exe
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\AutoApply.pdb
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\Newtonsoft.Json.dll
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\RestSharp.dll
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\WebDriver.dll
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\Newtonsoft.Json.xml
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\Selenium.WebDriverBackedSelenium.pdb
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\Selenium.WebDriverBackedSelenium.xml
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\ThoughtWorks.Selenium.Core.pdb
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\ThoughtWorks.Selenium.Core.xml
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\WebDriver.xml
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\WebDriver.Support.pdb
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\bin\Release\WebDriver.Support.xml
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\obj\Release\AutoApply.csprojResolveAssemblyReference.cache
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\obj\Release\AutoApply.csproj.CoreCompileInputs.cache
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\obj\Release\AutoApply.exe
+C:\Users\Chris\Desktop\Dev\AutoApply\AutoApply\obj\Release\AutoApply.pdb

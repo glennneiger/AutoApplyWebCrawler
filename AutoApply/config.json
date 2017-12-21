@@ -1,6 +1,22 @@
 ﻿{
-  "DetectLanguageApiKey": "http://ws.detectlanguage.com", // Optional (change to "demo" if you would like [allows for a few sample calls a day])
-  "IndeedPublisherApiKey": "https://www.indeed.com/publisher", // Required
-  "SqlConnectionString": "Provider=SQLNCLI11;Server=myServerAddress;Database=CrossMyLoss;Uid=myUsername;Pwd=myPassword;", // Change to your Database (as in Readme.md)
-  "Session":  1 // Should correlate to SessionId of record we are applying for in CrossMyLoss Sql Server database
+  "sql": "Data Source=awsrdsurl;Initial Catalog=CrossMyLoss;User Id=username;Password=password",
+  "indeed-api": "key-value", // https://www.indeed.com/publisher (Required)
+  "locations": [
+    { "country-code": "us", "city": "New York" },
+    { "country-code": "us", "city": "" },
+    { "country-code": "au", "city": "Sydney" }
+  ],
+  "terms": [ "Developer", "C#", "Azure", "AWS" ],
+  "user": {
+    "email": "sample@outlook.com",
+    "full-name": "Gina Hitstalini",
+    "phone-num": "+1(703)989-8381",
+    "resume-path": "C:\\FullPath\\To\\SampleResume.pdf",
+    "supporting-file1": "C:\\FullPath\\To\\SomeFile.pdf",
+    "supporting-file2": "C:\\FullPath\\To\\SomeFile.pdf",
+    "supporting-file3": "C:\\FullPath\\To\\SomeFile.pdf",
+    "supporting-file4": "C:\\FullPath\\To\\SomeFile.pdf",
+    "supporting-file5": "C:\\FullPath\\To\\SomeFile.pdf",
+    "cover-letter": "C:\\FullPath\\To\\CoverLetter.txt"
+  }
 }

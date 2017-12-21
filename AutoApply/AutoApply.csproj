@@ -66,11 +66,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\DetectLanguageModel.cs" />
     <Compile Include="Models\ApplyIndeedModel.cs" />
-    <Compile Include="Controllers\DetectLanguageController.cs" />
     <Compile Include="Controllers\ApplyIndeedController.cs" />
-    <Compile Include="Models\GlobalModel.cs" />
+    <Compile Include="Models\ConfigModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

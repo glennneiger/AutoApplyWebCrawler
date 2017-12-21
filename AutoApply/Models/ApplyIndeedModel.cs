@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace AutoApply
 {
@@ -25,37 +26,6 @@ namespace AutoApply
         public bool IndeedApply { get; set; }
         public string FormattedLocationFull { get; set; }
         public string FormattedRelativeTime { get; set; }
-    }
-
-    // Which countries user is to apply to
-    public class UserCountryApply
-    {
-        // To print to console for keeping track in loop
-        public string Country { get; set; }
-
-        // Syntax as expected by Indeed API GET paramater
-        public string CountryCode { get; set; }
-
-        // Location to query within Indeed API Query
-        public string Location { get; set; }
-
-        // If set to yes, the method to check if English is called. If not in English application will be skipped.
-        public bool CheckLang { get; set; }
-    }
-
-    // Configuration Details for the user entered in the Indeed Application area
-    public class User
-    {
-        public string AppEmail { get; set; }
-        public string AppName { get; set; }
-        public string AppPhone { get; set; }
-        public string AppResumePath { get; set; }
-        public string AppSupportingDoc1 { get; set; }
-        public string AppSupportingDoc2 { get; set; }
-        public string AppSupportingDoc3 { get; set; }
-        public string AppSupportingDoc4 { get; set; }
-        public string AppSupportingDoc5 { get; set; }
-        public string CoverLetter { get; set; }
     }
 
     // Object inserted to Database in the case we would want this
