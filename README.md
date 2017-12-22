@@ -24,13 +24,28 @@ Application for Automatically Applying to jobs using a Web Crawler (i.e. using S
 		* "email": Your Email (required)
 		* "full-name": Your Full Name (required)
 		* "phone-num": Your Phone Number (required)
-		* "resume-path": C:\\FullPath\\To\\SampleResume.pdf (required)
-		* "supporting-file1": C:\\FullPath\\To\\SomeFile.pdf (optional)
-		* "supporting-file2": C:\\FullPath\\To\\SomeFile.pdf (optional)
-		* "supporting-file3": C:\\FullPath\\To\\SomeFile.pdf (optional)
-		* "supporting-file4": C:\\FullPath\\To\\SomeFile.pdf (optional)
-		* "supporting-file5": C:\\FullPath\\To\\SomeFile.pdf (optional)
-		* "cover-letter": C:\\FullPath\\To\\CoverLetter.txt
+		* "resume-path": C:\\\\FullPath\\\\To\\\\SampleResume.pdf (required)
+		* "supporting-file1": C:\\\\FullPath\\\\To\\\\SomeFile.pdf (optional)
+		* "supporting-file2": C:\\\\FullPath\\\\To\\\\SomeFile.pdf (optional)
+		* "supporting-file3": C:\\\\FullPath\\\\To\\\\SomeFile.pdf (optional)
+		* "supporting-file4": C:\\\\FullPath\\\\To\\\\SomeFile.pdf (optional)
+		* "supporting-file5": C:\\\\FullPath\\\\To\\\\SomeFile.pdf (optional)
+		* "cover-letter": C:\\\\FullPath\\\\To\\\\CoverLetter.txt
+
+
+>**Please Note**: 
+>
+>In JSON, file paths should use 2 backslashes, not 1. 
+>
+>Therefore 
+>
+>>* C:\\FullPath\\To\\CoverLetter.txt
+>
+>Should be entered as:
+>
+>>* C:\\\\FullPath\\\\To\\\\CoverLetter.txt
+>
+>To the "cover-letter" property of the config.json file. 
 
 # Getting Finished
 
