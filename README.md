@@ -51,8 +51,12 @@ Application for Automatically Applying to jobs using a Web Crawler (i.e. using S
 
 Run the application by doing any of the following:
 
-1. Open in Visual Studio and hit Run/f5 while in Debug mode
+1. Open the solution in Visual Studio (.sln file) and hit f5/run
 2. Navigate to and double click "AutoApply/bin/Debug/AutoApply.exe"
 3. Navigate to and double click "AutoApply/bin/Release/AutoApply.exe"
 
-Enjoy :)
+If you have any questions or require assistance, please feel free to 
+
+get in touch. My email is chris.hadjimylos@bitbytebuffer.com
+
+**Enjoy** :) !!
