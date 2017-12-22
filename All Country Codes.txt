@@ -1,5 +1,5 @@
 Country		  |		Country_Code
--------------------------------------
+--------------------------------------------
 Antarctica				aq
 Argentina				ar
 Australia				au
@@ -12,7 +12,7 @@ Chile					cl
 China					cn
 Colombia				co
 Costa Rica				cr
-Czech Republic			cz
+Czech Republic				cz
 Denmark					dk
 Ecuador					ec
 Egypt					eg
@@ -47,9 +47,9 @@ Portugal				pt
 Qatar					qa
 Romania					ro
 Russia					ru
-Saudi Arabia			sa
+Saudi Arabia				sa
 Singapore				sg
-South Africa			za
+South Africa				za
 South Korea				kr
 Spain					es
 Sweden					se
@@ -58,9 +58,9 @@ Taiwan					tw
 Thailand				th
 Turkey					tr
 Ukraine					ua
-United Arab Emirates	ae
-United Kingdom			gb
-United States			us
+United Arab Emirates			ae
+United Kingdom				gb
+United States				us
 Uruguay					uy
 Venezuela				ve
 Vietnam					vn

@@ -2,14 +2,14 @@
   "sql": "Data Source=entervalue;Initial Catalog=CrossMyLoss;User Id=username;Password=password",
   "indeed-api": "key-value", // https://www.indeed.com/publisher (Required)
   "locations": [
-    { "country-code": "us", "city": "New York" },
+    { "country-code": "us", "city": "New York" }, 
     { "country-code": "us", "city": "" },
     { "country-code": "au", "city": "Sydney" }
   ],
   "terms": [ "Developer", "C#", "Azure", "AWS" ],
   "user": {
     "email": "sample@outlook.com",
-    "full-name": "Gina Hitstalini",
+    "full-name": "Gina Appliesalot",
     "phone-num": "+1(703)989-8381",
     "resume-path": "C:\\FullPath\\To\\SampleResume.pdf",
     "supporting-file1": "C:\\FullPath\\To\\SomeFile.pdf",
